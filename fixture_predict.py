@@ -9,6 +9,7 @@ def do_args():
 
     parser.add_argument('--predictday', help='day to use to predict results (YYYY-MM-DD)')
     parser.add_argument('--infile', help='csv to use for predictions')
+    parser.add_argument('--outfile', help='csv to use for writing results of predictions')
     parser.add_argument('--league', help='integer representing the league for predictions')
 
     args=  parser.parse_args()
@@ -25,6 +26,9 @@ if args.predictday:
 if args.league:
     leagueid=args.league
 
+#if args.outfile:
+outfile = args.outfile
+
 fix_pred = Fixtures.Fixtures(csvfile, Fixtures.names,False)
 
 fix_pred.df['FTG_3']=fix_pred.df.FTHG_3 - fix_pred.df.FTAG_3
@@ -38,5 +42,8 @@ c=FootballClf.FootballClf()
 clf=c.load_by_name('small clf')
 
 fix_pred.df['prediction']=clf.predict(X)
-print(fix_pred.df[['HomeTeam', 'AwayTeam', 'prediction']])
+print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction']])
 
+if outfile is not None:
+    with open(outfile, 'a') as f:
+        fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction']].to_csv(f, header=False)
