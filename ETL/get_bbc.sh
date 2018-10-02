@@ -1,0 +1,1 @@
+python3 bbcimport1.py --numdays=12
