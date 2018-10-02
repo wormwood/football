@@ -26,10 +26,10 @@ if args.predictday:
 if args.league:
     leagueid=args.league
 
-#if args.outfile:
+#if args.outfile:cmd
 outfile = args.outfile
 
-fix_pred = Fixtures.Fixtures(csvfile, Fixtures.names,False)
+fix_pred = Fixtures.Fixtures(csvfile, Fixtures.names,True)
 
 fix_pred.df['FTG_3']=fix_pred.df.FTHG_3 - fix_pred.df.FTAG_3
 fix_pred.df['FTG_5']=fix_pred.df.FTHG_5 - fix_pred.df.FTAG_5
