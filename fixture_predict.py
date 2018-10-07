@@ -7,10 +7,11 @@ def do_args():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--predictday', help='day to use to predict results (YYYY-MM-DD)')
+    parser.add_argument('--predictday', help='day to use to predict results (YYYY-MM-DD)', required=True)
     parser.add_argument('--infile', help='csv to use for predictions')
     parser.add_argument('--outfile', help='csv to use for writing results of predictions')
-    parser.add_argument('--league', help='integer representing the league for predictions')
+    parser.add_argument('--league', help='integer representing the league for predictions', type=int)
+    parser.add_argument('--refresh', help='If true, refresh the csv from the database', choices=['y', 'Y', 'n', 'N'], default='Y')
 
     args=  parser.parse_args()
     return args
@@ -26,10 +27,13 @@ if args.predictday:
 if args.league:
     leagueid=args.league
 
+refresh = args.refresh.upper()=='Y'
+
+
 #if args.outfile:cmd
 outfile = args.outfile
 
-fix_pred = Fixtures.Fixtures(csvfile, Fixtures.names,True)
+fix_pred = Fixtures.Fixtures(csvfile, Fixtures.names,refresh)
 
 fix_pred.df['FTG_3']=fix_pred.df.FTHG_3 - fix_pred.df.FTAG_3
 fix_pred.df['FTG_5']=fix_pred.df.FTHG_5 - fix_pred.df.FTAG_5

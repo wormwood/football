@@ -1,0 +1,1 @@
+sqlcmd -S localhost -U sa -P Passw0rd -d fixtures_v2 -Q "exec dbo.DoAllELOs 64"
