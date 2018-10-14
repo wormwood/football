@@ -1,3 +1,4 @@
 date,clf_name,version,comment,filename,colnames
 2018-09-29 14:23:05,small clf,1,a test of the new system,f_clf.RandomForestClassifier,"['ExpectedResult', 'FTG_3', 'FTG_5']"
 2018-09-29 14:36:49,small clf,1,a test of the new system,f_clf.RandomForestClassifier,"['ExpectedResult', 'FTG_3', 'FTG_5']"
+2018-10-08 23:08:16,small clf,1,a test of the new system,f_clf_dev.RandomForestClassifier,"['ExpectedResult', 'FTG_3', 'FTG_5']"

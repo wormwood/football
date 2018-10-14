@@ -4,7 +4,8 @@ from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
-fixs = Fixtures.Fixtures('vwCSV_2.csv', Fixtures.names, False)
+fixs = Fixtures.Fixtures()
+fixs.fix_load('vwCSV_2.csv', True)
 
 fixs.df['FTG_3']=fixs.df.FTHG_3 - fixs.df.FTAG_3
 fixs.df['FTG_5']=fixs.df.FTHG_5 - fixs.df.FTAG_5
@@ -23,5 +24,4 @@ rep=classification_report(y_test, y_pred)
 print (rep)
 
 c=FootballClf.FootballClf()
-c.save(clf, 'small clf', 1, 'a test of the new system', 'f_clf', cols_for_prediction)
-
+c.save(clf, 'small clf', 1, 'a test of the new system', 'f_clf_dev', cols_for_prediction)

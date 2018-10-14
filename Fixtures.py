@@ -1,26 +1,26 @@
 import pandas as pd 
 import os
 
-names=['FixtureID', 'season', 'leagueid', 'fixDate','HomeTeamID', 'FTHG', 'AwayTeamID' , 'FTAG', 
-         'HomeELO_prev', 'AwayELO_prev', 'HomeTeamResult', 'AwayTeamResult',
-         'HomeTeam', 'AwayTeam', 'FTHG_3', 'FTAG_3', 'FTHG_5', 'FTAG_5']
-         
+
+
 class Fixtures():
     
 
-    def __init__(self, fix_csv, names, refresh, start_date=None, end_date=None):
-        if fix_csv is not None:
-            self.fix_load(fix_csv, names, refresh, start_date, end_date)
+    def __init__(self):
+        self.names=['FixtureID', 'season', 'leagueid', 'fixDate','HomeTeamID', 'FTHG', 'AwayTeamID' , 'FTAG', 
+         'HomeELO_prev', 'AwayELO_prev', 'HomeTeamResult', 'AwayTeamResult',
+         'HomeTeam', 'AwayTeam', 'FTHG_3', 'FTAG_3', 'FTHG_5', 'FTAG_5']
+
         self.agg_cols=[]
             
         
             
-    def fix_load(self, filename, names, refresh, start_date=None, end_date=None):
+    def fix_load(self, SQLviewname, filename, refresh, start_date=None, end_date=None):
         if refresh :
-            bcp_fixtures = "bcp vwCSV_2 out %s -S localhost -U sa -P Passw0rd -d fixtures_v2 -c -t ','" % filename
+            bcp_fixtures = "bcp %s out %s -S localhost -U sa -P Passw0rd -d fixtures_v2 -c -t ','" % (SQLviewname, filename)
             os.system(bcp_fixtures)
 
-        self.df = pd.read_csv(filename, header=None, names=names)
+        self.df = pd.read_csv(filename, header=None, names=self.names)
         self.df['FixtureDateAsDate'] = pd.to_datetime(self.df['fixDate'])
         self.df = self.df.sort_values(by='FixtureDateAsDate')
         self.Target_col_name='Target'
@@ -47,7 +47,17 @@ class Fixtures():
         self.df49.rename(index=str, inplace=True, columns={agg_col: newcol})
         self.df = self.df.merge(self.df49[['level_1',newcol]], left_index=True, right_on='level_1')
         self.df.drop(['level_1'], axis=1, inplace=True)
-        
+
+    def do_calcs(self):
+        self.df['FTG_3']=self.df.FTHG_3 - self.df.FTAG_3
+        self.df['FTG_5']=self.df.FTHG_5 - self.df.FTAG_5
+
+    def X(self):
+        return self.df[['ExpectedResult', 'FTG_3', 'FTG_5']].values
+
+    def y(self):
+        return self.df['HomeTeamResult'].values
+
 #    def calc_diffs(self, prefix, delcols):
 #        operand1 = [s for s in f.agg_cols if prefix in s][0]
 #        operand2 = [s for s in f.agg_cols if prefix in s][1]
