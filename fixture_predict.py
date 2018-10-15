@@ -70,16 +70,15 @@ fix_pred=FixturesOdds()
 fix_pred.fix_load('vwCSV_3','vwCSV_3.csv', False) # no reresh
 fix_pred.do_calcs()
 
-
-x =get_odds('skybet')
-fix_pred.add_odds(x)
-
+fix_pred.add_live_odds('skybet', int(leagueid))
+#x =get_odds('skybet')
+#fix_pred.add_odds(x)
+fix_pred.clean_predict()
 
 fix_pred.filter_by_col('FixtureDateAsDate', predictday).filter_by_col('leagueid', int(leagueid))
 X=fix_pred.X()
 
 c=FootballClf.FootballClf()
-
 clf=c.load_by_name('betting clf')
 
 fix_pred.df['prediction']=clf.predict(X)
