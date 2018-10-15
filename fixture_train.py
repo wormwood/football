@@ -1,27 +1,33 @@
-import Fixtures
+from FixturesOdds import FixturesOdds
 import FootballClf
 from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
+from sklearn.grid_search import GridSearchCV
+import numpy as np
 
-fixs = Fixtures.Fixtures()
-fixs.fix_load('vwCSV_2.csv', True)
 
-fixs.df['FTG_3']=fixs.df.FTHG_3 - fixs.df.FTAG_3
-fixs.df['FTG_5']=fixs.df.FTHG_5 - fixs.df.FTAG_5
+n_estimators = [int(x) for x in np.linspace(start=10, stop=100, num=10)]
+max_features = ['auto', 'sqrt']
+criterion = ['gini']
+min_samples_split=[2,5,10]
+param_grid = [{'n_estimators' : n_estimators, 'max_features' : max_features, 'criterion' : criterion, 
+                      'min_samples_split' : min_samples_split}]
 
-fixs.clean()
-cols_for_prediction=['ExpectedResult', 'FTG_3', 'FTG_5']
-X=fixs.df[cols_for_prediction].values
-y=fixs.df['HomeTeamResult'].values
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+fo=FixturesOdds()
+fo.fix_load('vwCSV_3','vwCSV_3.csv', False)
+fo.do_calcs()
+fo.clean()
 
 clf =  RandomForestClassifier(max_depth=10, n_estimators=2000, min_samples_leaf=10, random_state=0)
-clf.fit(X_train, y_train)
+X,y=fo.X(),fo.y()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
-y_pred = clf.fit(X_train, y_train).predict(X_test)
-rep=classification_report(y_test, y_pred)
-print (rep)
+gs=GridSearchCV(clf, param_grid, cv=5, scoring='recall_weighted')
+gs.fit(X_train, y_train)
+
+y_pred = gs.best_estimator_.fit(X_train, y_train).predict(X_test)
+print(classification_report(y_test, y_pred))
 
 c=FootballClf.FootballClf()
-c.save(clf, 'small clf', 1, 'a test of the new system', 'f_clf_dev', cols_for_prediction)
+c.save(gs.best_estimator_, 'betting clf', 1, 'using odds to predict', 'odds_clf_dev', ['ExpectedResult', 'FTG_3', 'FTG_5', 'HomeOdds', 'DrawOdds', 'AwayOdds'])
