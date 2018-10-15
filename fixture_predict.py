@@ -80,6 +80,8 @@ X=fix_pred.X()
 
 c=FootballClf.FootballClf()
 clf=c.load_by_name('betting clf')
+pd.set_option('display.max_colwidth', 18)
+pd.set_option('colheader_justify', 'left')
 
 fix_pred.df['prediction']=clf.predict(X)
 print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction']])
@@ -87,3 +89,4 @@ print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction']])
 if outfile is not None:
     with open(outfile, 'a') as f:
         fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction']].to_csv(f, header=False)
+
