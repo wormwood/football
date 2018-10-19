@@ -2,6 +2,13 @@ from Fixtures import Fixtures
 import requests
 import pandas as pd
 
+
+def swap (row):
+    if row[0]!= row[2]:
+        return[row[0], row[1],row[2],row['AwayOdds'], row['DrawOdds'], row['HomeOdds']]
+    else:
+        return[row[0], row[1],row[2],row['HomeOdds'], row['DrawOdds'], row['AwayOdds']]
+
 class FixturesOdds(Fixtures):
     
     def __init__(self):
@@ -29,9 +36,10 @@ class FixturesOdds(Fixtures):
         return self
 
 
+
     def get_odds(self, bookie_key, leaugeid):
-        
         apiKey='fc3fa79ee130aa6427d2d86743b794fc'
+        apiKey = 'edddec034215860d93d49887ede78024'
         sports = {1 : 'soccer_epl', 2: 'soccer_efl_champ'}
         sport = sports[leaugeid]
         url = "https://api.the-odds-api.com/v3/odds/?sport=%s&region=uk&apiKey=%s" % (sport,apiKey)
@@ -49,16 +57,9 @@ class FixturesOdds(Fixtures):
         x =  list(zip(home_teams,odds,first_team))
         
         df1=pd.DataFrame(x)
-        df1[['AwayOdds', 'HomeOdds', 'DrawOdds']]=pd.DataFrame(df1[1].values.tolist(), index=df1.index)
-        
-    # swap Home and Away odds because the api mixes them up if it says the home team is the away team   
-        saved_away=df1['AwayOdds']
-        swapindex=df1[0]!=df1[2] # if the home team is wrong
-        df1.loc[swapindex, 'AwayOdds']=df1['HomeOdds'] 
-        df1.loc[swapindex, 'HomeOdds']=saved_away
-        
-        
-        df1=pd.DataFrame(x, columns=['HomeTeam',1,2])
-        df1[['AwayOdds', 'HomeOdds', 'DrawOdds']]=pd.DataFrame(df1[1].values.tolist(), index=df1.index)
-        
+
+        df1[['HomeOdds', 'AwayOdds', 'DrawOdds']]=pd.DataFrame(df1[1].values.tolist(), index=df1.index)
+        df1=df1[[0,1,2,'HomeOdds', 'DrawOdds', 'AwayOdds']].apply(swap,1)
+        df1.replace({'Bournemouth' : 'AFC Bournemouth'}, inplace=True)
+        df1.rename(columns={0:'HomeTeam'}, inplace=True)
         return df1[['HomeTeam','HomeOdds', 'DrawOdds', 'AwayOdds']]
