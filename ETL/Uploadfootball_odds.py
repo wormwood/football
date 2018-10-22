@@ -24,11 +24,13 @@ engine = create_engine(connstr).connect()
 
 engine.execute(sa_text('''EXEC dbo.PrepStaging''').execution_options(autocommit=True))
 
-files = glob.glob('./odds/E*.csv_odds')
+files = glob.glob('odds/E*.csv_odds')
 for file in files:
     print ('processing...', file)
     
     df = pd.read_csv(file)
+    df.drop(['Unnamed: 0'], axis=1, inplace=True)
+    df.rename(columns={'Date':'FDate'}, inplace=True)
     df.to_sql(name='footballdata_odds', schema='staging', con=engine, if_exists='append', index=False)
     # move file to archive folder
     os.rename(file, os.path.join('archive',os.path.basename(file)))
