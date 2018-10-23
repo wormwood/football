@@ -52,9 +52,10 @@ c=FootballClf.FootballClf()
 clf=c.load_by_name('betting clf')
 pd.set_option('display.max_colwidth', 18)
 pd.set_option('colheader_justify', 'left')
+pd.set_option('display.expand_frame_repr', False)
 
 fix_pred.df['prediction']=clf.predict(X)
-print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction', 'HomeOdds', 'AwayOdds']])
+print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction', 'HomeOdds', 'DrawOdds', 'AwayOdds']])
 
 if outfile is not None:
     with open(outfile, 'a') as f:

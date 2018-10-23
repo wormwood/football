@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #for f in ./bbc/bbc_results_1_*.csv ; do
 #	printf "processing : %s\n" "$f"
 #	sqlcmd -S localhost -U sa -P Passw0rd -d fixtures_v2 -Q "exec dbo.PrepStaging"

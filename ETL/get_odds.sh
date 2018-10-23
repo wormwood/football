@@ -7,5 +7,5 @@ for year in 1819; do
 done
 
 for f in ./football-data/E*.csv ; do
-	python3 unpivot_odds.py $f football-data/$(basename $f)_odds
+	python3 unpivot_odds.py $f odds/$(basename $f)_odds
 done
