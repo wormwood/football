@@ -39,7 +39,7 @@ if args.outfile:
 
 
 fix_pred=FixturesOdds()
-fix_pred.fix_load('vwCSV_3','vwCSV_3.csv', False) # no reresh
+fix_pred.fix_load('vwCSV_3','vwCSV_3.csv', True) # no reresh
 fix_pred.do_calcs()
 
 fix_pred.add_live_odds('skybet', int(leagueid))
