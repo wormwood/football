@@ -68,3 +68,9 @@ class Fixtures():
     def filter_by_col(self, column, val):
         self.df = self.df[self.df[column]==val]
         return self
+
+    def last_result_by_league(self):
+        return self.df[self.df.FTHG.notnull()].fixDate.groupby(self.df['leagueid']).max()
+
+    def last_ELO_by_league(self):
+        return self.df[self.df.HomeELO_prev.notnull()].fixDate.groupby(self.df['leagueid']).max()

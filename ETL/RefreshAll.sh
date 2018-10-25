@@ -1,4 +1,4 @@
-echo "getting fixtures from football data"
+echo "getting fixture results from football data"
 ./get_football-data.sh
 echo "loading fixtures from football data"
 ./UploadFootball-data.sh
