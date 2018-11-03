@@ -1,13 +1,16 @@
 from Fixtures import Fixtures
 import requests
 import pandas as pd
-
+from datetime import datetime
 
 def swap (row):
     if row[0]!= row[2]:
-        return[row[0], row[1],row[2],row['AwayOdds'], row['DrawOdds'], row['HomeOdds']]
+        return[row[0], row[1],row[2],row[3],row['AwayOdds'], row['DrawOdds'], row['HomeOdds']]
     else:
-        return[row[0], row[1],row[2],row['HomeOdds'], row['DrawOdds'], row['AwayOdds']]
+        return[row[0], row[1],row[2],row[3],row['HomeOdds'], row['DrawOdds'], row['AwayOdds']]
+
+def format_commence_time(commence_time):
+    return datetime.utcfromtimestamp(int(commence_time)).strftime('%Y-%m-%d')
 
 class FixturesOdds(Fixtures):
     
@@ -25,14 +28,15 @@ class FixturesOdds(Fixtures):
     def X(self):
         return self.df[self.predict_cols].values
     
-    def add_live_odds(self, bookie_key, leagueid):
+    def add_live_odds(self, bookie_key, leagueid,predictday):
 
         df_odds = self.get_odds(bookie_key, leagueid)
+        df_odds=df_odds[df_odds.fixdate==predictday]
         self.add_odds(df_odds)
 
     def add_odds(self, df_odds):
         self.df.drop(['HomeOdds', 'DrawOdds', 'AwayOdds'], axis=1, inplace=True)
-        self.df = self.df.merge(df_odds, left_on='HomeTeam', right_on='HomeTeam')
+        self.df = self.df.merge(df_odds, left_on=['HomeTeam'], right_on=['HomeTeam'])
         return self
 
 
@@ -52,14 +56,17 @@ class FixturesOdds(Fixtures):
         home_teams = [game['home_team'] for game in games]
         sites = [game['sites'] for game in games]
         odds=[s['odds']['h2h'] for site in sites for s in site if s['site_key']==bookie_key]
-        
+        dates=[format_commence_time(game['commence_time']) for game in games]
+
         first_team = [game['teams'][0] for game in games]
-        x =  list(zip(home_teams,odds,first_team))
+        x =  list(zip(home_teams,odds,first_team,dates))
         
         df1=pd.DataFrame(x)
 
         df1[['HomeOdds', 'AwayOdds', 'DrawOdds']]=pd.DataFrame(df1[1].values.tolist(), index=df1.index)
-        df1=df1[[0,1,2,'HomeOdds', 'DrawOdds', 'AwayOdds']].apply(swap,1)
+        df1=df1[[0,1,2,3,'HomeOdds', 'DrawOdds', 'AwayOdds']].apply(swap,1)
         df1.replace({'Bournemouth' : 'AFC Bournemouth'}, inplace=True)
-        df1.rename(columns={0:'HomeTeam'}, inplace=True)
-        return df1[['HomeTeam','HomeOdds', 'DrawOdds', 'AwayOdds']]
+        df1.replace({'Brighton and Hove Albion' : 'Brighton & Hove Albion'}, inplace=True)
+        df1.rename(columns={0:'HomeTeam',3:'fixdate'}, inplace=True)
+        return df1[['HomeTeam','fixdate', 'HomeOdds', 'DrawOdds', 'AwayOdds']]
+

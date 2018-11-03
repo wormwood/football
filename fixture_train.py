@@ -1,9 +1,9 @@
 from FixturesOdds import FixturesOdds
 import FootballClf
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
-from sklearn.grid_search import GridSearchCV
+from sklearn.model_selection import GridSearchCV
 import numpy as np
 
 
@@ -30,4 +30,4 @@ y_pred = gs.best_estimator_.fit(X_train, y_train).predict(X_test)
 print(classification_report(y_test, y_pred))
 
 c=FootballClf.FootballClf()
-c.save(gs.best_estimator_, 'betting clf', 1, 'using odds to predict', 'odds_clf_dev', ['ExpectedResult', 'FTG_3', 'FTG_5', 'HomeOdds', 'DrawOdds', 'AwayOdds'])
+c.save(gs.best_estimator_, 'betting clf_1.1', 1, 'using odds to predict', 'odds_clf_dev', ['ExpectedResult', 'FTG_3', 'FTG_5', 'HomeOdds', 'DrawOdds', 'AwayOdds'])

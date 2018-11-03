@@ -39,17 +39,17 @@ if args.outfile:
 
 
 fix_pred=FixturesOdds()
-fix_pred.fix_load('vwCSV_3','vwCSV_3.csv', True) # no reresh
+fix_pred.fix_load('vwCSV_3','vwCSV_3.csv', refresh) # no reresh
 fix_pred.do_calcs()
 
-fix_pred.add_live_odds('skybet', int(leagueid))
+fix_pred.add_live_odds('skybet', int(leagueid),predictday)
 fix_pred.clean_predict()
 
 fix_pred.filter_by_col('FixtureDateAsDate', predictday).filter_by_col('leagueid', int(leagueid))
 X=fix_pred.X()
 
 c=FootballClf.FootballClf()
-clf=c.load_by_name('betting clf')
+clf=c.load_by_name('betting clf_1.1')
 pd.set_option('display.max_colwidth', 18)
 pd.set_option('colheader_justify', 'left')
 pd.set_option('display.expand_frame_repr', False)
