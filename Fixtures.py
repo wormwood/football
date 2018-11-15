@@ -66,7 +66,10 @@ class Fixtures():
 #            self.df.drop([operand1, operand2], axis=1, inplace=True)
             
     def filter_by_col(self, column, val):
-        self.df = self.df[self.df[column]==val]
+        if type(val) == list:
+            self.df = self.df[self.df[column].isin(val)]
+        else:
+            self.df = self.df[self.df[column]==val]
         return self
 
     def last_result_by_league(self):

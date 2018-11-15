@@ -55,6 +55,8 @@ pd.set_option('colheader_justify', 'left')
 pd.set_option('display.expand_frame_repr', False)
 
 fix_pred.df['prediction']=clf.predict(X)
+fix_pred.df.sort_values('HomeTeam', inplace=True)
+
 print(fix_pred.df[['FixtureDateAsDate','HomeTeam', 'AwayTeam', 'prediction', 'HomeOdds', 'DrawOdds', 'AwayOdds']])
 
 if outfile is not None:
