@@ -1,12 +1,12 @@
---2018-11-15 10:25:23--  http://www.football-data.co.uk/mmz4281/1819/E3.csv
+--2018-11-27 12:01:50--  http://www.football-data.co.uk/mmz4281/1819/E3.csv
 Resolving www.football-data.co.uk... 217.160.223.109
 Connecting to www.football-data.co.uk|217.160.223.109|:80... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 51891 (51K) [text/csv]
+Length: 57714 (56K) [text/csv]
 Saving to: 'E31819.csv'
 
-     0K .......... .......... .......... .......... .......... 98%  711K 0s
-    50K                                                       100%  391K=0.07s
+     0K .......... .......... .......... .......... .......... 88%  850K 0s
+    50K ......                                                100%  631K=0.07s
 
-2018-11-15 10:25:23 (703 KB/s) - 'E31819.csv' saved [51891/51891]
+2018-11-27 12:01:50 (818 KB/s) - 'E31819.csv' saved [57714/57714]
 

@@ -12,6 +12,18 @@ def swap (row):
 def format_commence_time(commence_time):
     return datetime.utcfromtimestamp(int(commence_time)).strftime('%Y-%m-%d')
 
+def applic_odds(row):
+    
+    if row['prediction'] != row['HomeTeamResult']:
+        return 0
+    elif row['HomeTeamResult'] == 'W' :
+        return row['HomeOdds']
+    elif row['HomeTeamResult'] =='D':
+        return row['DrawOdds']
+    else:
+        return row['AwayOdds']
+
+
 class FixturesOdds(Fixtures):
     
     def __init__(self):
@@ -70,3 +82,7 @@ class FixturesOdds(Fixtures):
         df1.rename(columns={0:'HomeTeam',3:'fixdate'}, inplace=True)
         return df1[['HomeTeam','fixdate', 'HomeOdds', 'DrawOdds', 'AwayOdds']]
 
+    def calc_bet_results(self, stake):
+        self.df['stake']=-stake
+        self.df['applic_odds'] = self.df.apply(applic_odds, axis=1) #decide on payout
+        self.df['betprofit'] = self.df['applic_odds'].apply(lambda odds: odds*stake if odds !=0 else -stake)
