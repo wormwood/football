@@ -85,4 +85,4 @@ class FixturesOdds(Fixtures):
     def calc_bet_results(self, stake):
         self.df['stake']=-stake
         self.df['applic_odds'] = self.df.apply(applic_odds, axis=1) #decide on payout
-        self.df['betprofit'] = self.df['applic_odds'].apply(lambda odds: odds*stake if odds !=0 else -stake)
+        self.df['betprofit'] = self.df['applic_odds'].apply(lambda odds: (odds-1)*stake if odds !=0 else -stake)

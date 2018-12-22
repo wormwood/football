@@ -1,0 +1,625 @@
+<!doctype html>
+
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7 " lang="en-gb"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8 ie7 " lang="en-gb"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9 ie8 " lang="en-gb"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js " lang="en-gb"><!--<![endif]-->
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+        <title>Crime map for Stevenage Central, Hertfordshire Constabulary - Police.uk</title>
+
+        <meta name="description" content=""/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <meta name="mobile-web-app-capable" content="yes"/>
+
+        <link href="/static/css/base.min.20d51681c4b6.css" rel="stylesheet" type="text/css" />
+
+        
+    <link href="/static/css/crime/index.min.8daa34a2782b.css" rel="stylesheet" type="text/css" />
+
+
+        <script type="text/javascript" src="/jsi18n/"></script>
+
+        <script type="text/javascript" src="/static/js/base-header.min.59d9b31119f6.js" charset="utf-8"></script>
+
+        <script>
+            Modernizr.mq('(min-width:0)') || document.write('<script src="/static/js/libs/respond/respond.min.js"><\/script>');
+
+            var has_last_neighbourhood = true;
+            var default_search_placeholder = 'Postcode or place name';
+        </script>
+
+        <!--[if lte IE 8]>
+            <script type="text/javascript" src="/static/js/lte-ie8.dfee16d73c78.js" charset="utf-8"></script>
+        <![endif]-->
+
+        
+    
+    <script type='text/javascript'>
+        var clear_map_state = false;
+        var mode = 'polygon';
+        var area = [[51.8884101073,-0.186338424683],[51.884330903,-0.193462371826],[51.8780789364,-0.188140869141],[51.8745816946,-0.176038742065],[51.8798274553,-0.162649154663],[51.8884101073,-0.186338424683]];
+        var latest_date = '2018-11';
+        var crime_data_url = "/hertfordshire/E02/crime/2018-09/+okQo5G/data/";
+        var stop_data_url = "/hertfordshire/E02/stop-and-search/map/2018-09/+okQo5G/data/";
+        var centre = [51.9039383897, -0.191817607083];
+        var searched = [51.9039383897, -0.191817607083];
+        var force_slug = 'hertfordshire';
+        var neighbourhood_id = 'E02';
+        var date_str = 'September 2018';
+
+        var shape_centre;
+        var searched_location;
+
+        
+
+        
+    </script>
+
+
+        <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+        <link rel="shortcut icon" sizes="196x196" href="/static/img/shortcut-icon-196x196.png"/>
+        <link rel="apple-touch-icon" sizes="144x144" href="/static/img/shortcut-icon-144x144.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="/static/img/shortcut-icon-114x114.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="/static/shortcut-icon-72x72.png"/>
+        <link rel="apple-touch-icon" href="/static/shortcut-icon-57x57.png"/>
+
+        
+    
+
+
+
+
+<script>
+    var mapProvider = "mapbox";
+    var mapboxAccessToken = "pk.eyJ1IjoicmtoIiwiYSI6IkNiZENqeXMifQ.p1ZgEWGr2MHUHdrJAE1QEQ";
+</script>
+
+<link rel="stylesheet" href="/static/js/libs/leaflet/leaflet-0.7.3.css" />
+<script src="/static/js/libs/leaflet/leaflet-0.7.3.js"></script>
+
+
+
+<link rel="stylesheet" href="/static/js/libs/leaflet/MarkerCluster.css" />
+<link rel="stylesheet" href="/static/js/libs/leaflet/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="/static/js/libs/leaflet/leaflet.draw.css" />
+<!--[if lte IE 8]>
+<link rel="stylesheet" href="/static/js/libs/leaflet/MarkerCluster.Default.ie.css" />
+<link rel="stylesheet" href="/static/js/libs/leaflet/leaflet.draw.ie.css" />
+<![endif]-->
+
+
+<script src="/static/js/libs/leaflet/leaflet.markercluster.js"></script>
+<script src="/static/js/libs/leaflet/leaflet.draw.js"></script>
+
+
+    </head>
+    <body>
+
+        
+
+        <div id="skiplink">
+            <div class="inner">
+                <a href="#top">Skip to main content</a>
+            </div>
+        </div>
+
+        
+        
+        <header role="banner">
+            <div class="inner">
+
+                <p id="sitename"><a href="/" title="Go to Police.uk home page">Police.uk</a></p>
+
+                <ul id="global-nav-options">
+                    <li class="search">
+                        <a href="#search" aria-haspopup="true" aria-expanded="false"><span>Find your neighbourhood</span><i class="fa fa-search" aria-hidden="true"></i></a>
+                        <form data-geocode-url="/search/geocode/" action="/search/" role="search" id="search" aria-labelledby="search-legend">
+                            <input type="hidden" name="next" value="" />
+
+                            <fieldset>
+                                <legend id="search-legend" class="visuallyhidden">Search for a location</legend>
+                                <label for="q">Postcode or place name</label>
+                                <input type="search" id="q" name="q" placeholder="Postcode or place name"/><button type="submit">Search</button>
+                            </fieldset>
+
+                            <p id="current_location" class="hidden"><a href=""><i class="fa fa-location-arrow" aria-hidden="true"></i>Use current location</a></p>
+
+                            <div id="search_results" aria-live="assertive">
+                                <div class="inner">
+                                    
+                                        <p id="last-neighbourhood" class="h6">Your neighbourhood</p>
+                                        <ul class="locations">
+                                            <li><a href='/hertfordshire/E02/'><i class="fa fa-map-marker" aria-hidden="true"></i>Stevenage Central <span>Hertfordshire Constabulary</span></a></li>
+                                        </ul>
+                                    
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+
+                    <li class="share">
+                        <a href="#share" aria-haspopup="true" aria-expanded="false"><span id="share-label">Share this page</span><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                        
+                            
+                                <div id="share" data-url="https://www.police.uk/hertfordshire/E02/crime/2018-09/+okQo5G/" aria-label="Share">
+                                    <div class="inner">
+                                        <h2 class="h6">Share this page</h2>
+                                        <div class="static">
+                                            <p>This is a permanent link that you can copy and paste into emails or social media messages:<br /><a href="https://www.police.uk/hertfordshire/E02/crime/2018-09/+okQo5G/">https://www.police.uk/hertfordshire/E02/crime/2018-09/+okQo5G/</a></p>
+                                        </div>
+                                        <ul aria-labelledby="share-label">
+                                            <li class="platform facebook"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A//www.police.uk/hertfordshire/E02/crime/2018-09/%2BokQo5G/"><i class="fa fa-facebook" aria-hidden="true"></i>Facebook</a></li>
+                                            <li class="platform googlePlus"><a target="_blank" href="https://plus.google.com/share?url=https%3A//www.police.uk/hertfordshire/E02/crime/2018-09/%2BokQo5G/"><i class="fa fa-google-plus" aria-hidden="true"></i>Google+</a></li>
+                                            <li class="platform twitter"><a target="_blank" href="https://twitter.com/intent/tweet?url=https%3A//www.police.uk/hertfordshire/E02/crime/2018-09/%2BokQo5G/"><i class="fa fa-twitter" aria-hidden="true"></i>Twitter</a></li>
+                                            <li class="dynamic url">
+                                                <a href="/hertfordshire/E02/crime/2018-09/+okQo5G/"><i class="fa fa-link" aria-hidden="true"></i>Copy URL</a>
+                                                
+                                                
+                                                    <form>
+                                                        <input readonly value="https://www.police.uk/hertfordshire/E02/crime/2018-09/+okQo5G/" id="share-copyinput"/>
+                                                        <label for="share-copyinput">Press Ctrl+C to copy</label>
+                                                    </form>
+                                                
+                                            </li>
+                                            <li class="email"><a href="mailto:?body=https%3A//www.police.uk/hertfordshire/E02/crime/2018-09/%2BokQo5G/" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i>Email</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            
+                        
+                    </li>
+
+                    <li class="navigation">
+                        <a href="#navigation" aria-haspopup="true" aria-expanded="false"><span>Menu</span><i class="fa fa-bars" aria-hidden="true"></i></a>
+                        <nav id="navigation" aria-labelledby="main-nav-label">
+                            <div class="inner">
+                                
+
+<h2 id="main-nav-label">Main navigation</h2>
+
+<nav>
+    <h3>Help</h3>
+    <ul class="help" aria-label="Help navigation">
+        <li><a href="/information-and-advice/">Information &amp; advice</a></li>
+        <li><a href="/contact/">Contact the police</a></li>
+        <li><a href="/forces/">List of UK police forces</a></li>
+    </ul>
+</nav>
+
+<nav>
+    <h3>Police.uk data</h3>
+    <ul class="data" aria-label="Police.uk data navigation">
+        <li><a href="https://data.police.uk/">Use the data</a></li>
+    </ul>
+</nav>
+
+<nav>
+    <h3>Language</h3>
+
+    <ul class="language" aria-label="Available languages">
+        
+        
+        
+            <li class="en-gb" lang="en-gb" aria-label="English (active)">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                <form action="/i18n/setlang/" method="post">
+                    <input type='hidden' name='csrfmiddlewaretoken' value='UCs6Wpt6OHB1KaxXDytcF0S826Kh4TK8' />
+                    <input type="hidden" name="language" value="en-gb"/>
+                    <input class="setlang  selected" type="submit" value="English"/>
+                </form>
+            </li>
+        
+            <li class="cy" lang="cy" aria-label="Change language to 'Cymraeg'">
+                
+                <form action="/i18n/setlang/" method="post">
+                    <input type='hidden' name='csrfmiddlewaretoken' value='UCs6Wpt6OHB1KaxXDytcF0S826Kh4TK8' />
+                    <input type="hidden" name="language" value="cy"/>
+                    <input class="setlang " type="submit" value="Cymraeg"/>
+                </form>
+            </li>
+        
+    </ul>
+</nav>
+
+<nav>
+    <h3>About</h3>
+    <ul class="about" aria-label="About this website navigation">
+        <li><a href="/feedback/">Feedback</a></li>
+        <li><a href="/about-this-site/accessibility/">Accessibility</a></li>
+        <li><a href="/about-this-site/cookies/">Cookies</a></li>
+        <li><a href="/site-map/">Site map</a></li>
+    </ul>
+</nav>
+
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+
+            </div>
+        </header>
+
+        
+            <ul id="messages">
+                
+                    <li class="info"><div class="inner">Police.uk uses cookies to make the site simpler. <a href="/about-this-site/cookies/">Find out more about cookies</a></div></li>
+                
+            </ul>
+        
+
+        <main role="main">
+            <header aria-label="header">
+                <div class="inner">
+                    
+
+    
+<nav>
+    <ul id="breadcrumb" aria-label="Breadcrumbs">
+        
+            
+    
+    
+                <li><a href="/">Home</a> 
+            <span role='presentation' aria-hidden='true' tabindex='-1'> &gt;</span></li> <li>
+    <a href="/hertfordshire/">Hertfordshire Constabulary</a>
+<span role='presentation' aria-hidden='true' tabindex='-1'> &gt;</span></li> <li>
+    <a href="/hertfordshire/E02/">Stevenage Central</a>
+<span role='presentation' aria-hidden='true' tabindex='-1'> &gt;</span></li>
+        
+    </ul>
+</nav>
+
+    <h1 id="top">Crime map</h1>
+
+    
+<p id="skip_to_nav">
+    <a href="#related" aria-label="Jump to secondary navigation">
+        <i class="fa fa-arrow-down" aria-hidden="true"></i>Looking for something else?
+    </a>
+</p>
+
+
+
+                </div>
+            </header>
+
+            <div id="main">
+                <div class="inner">
+
+                    <div id="content">
+                        
+    <section id="data">
+        
+        <noscript>
+            <p>Javascript is required to view the map, but it is not supported by your browser. Please <a href="/hertfordshire/E02/crime/2018-09/+okQo5G/locations/">view the A-Z list of crime locations</a> instead.</p>
+        </noscript>
+
+        
+
+
+
+
+        <div id="map-stuff" aria-hidden="true">
+            <p id="dot-tutorial">Click on the dots on the map for information about individual crimes.</p>
+
+            
+
+<form method="post" id="filters" class="filter" aria-label="Select what data to show">
+    <div class="form-controls">
+        <div class="control">
+            <label for="crime_type" aria-label="Crime type">Showing<span aria-hidden="true" role="presentation">:</span></label>
+            
+
+
+<select id="crime_type" name="category">
+    
+        
+            <option value="all-crime">All crime (64)</option>
+            
+                <optgroup label="Crime types">
+            
+        
+            <option value="anti-social-behaviour">Anti-social behaviour (14)</option>
+            
+        
+            <option value="bicycle-theft">Bicycle theft (1)</option>
+            
+        
+            <option value="burglary">Burglary (6)</option>
+            
+        
+            <option value="criminal-damage-arson">Criminal damage and arson (5)</option>
+            
+        
+            <option value="drugs">Drugs (0)</option>
+            
+        
+            <option value="other-crime">Other crime (1)</option>
+            
+        
+            <option value="other-theft">Other theft (2)</option>
+            
+        
+            <option value="possession-of-weapons">Possession of weapons (2)</option>
+            
+        
+            <option value="public-order">Public order (3)</option>
+            
+        
+            <option value="robbery">Robbery (0)</option>
+            
+        
+            <option value="shoplifting">Shoplifting (15)</option>
+            
+        
+            <option value="theft-from-the-person">Theft from the person (1)</option>
+            
+        
+            <option value="vehicle-crime">Vehicle crime (5)</option>
+            
+        
+            <option value="violent-crime">Violence and sexual offences (9)</option>
+            
+        
+    </optgroup>
+    
+</select>
+
+
+        </div>
+
+        <div class="control">
+            <label for="month" class="visuallyhidden">Month</label>
+            
+
+
+<select id="month" name="date">
+    
+        
+            <optgroup label="2018">
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-11/all-crime/565049/" value="2018-11">reported in November 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-10/all-crime/565049/" value="2018-10">reported in October 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-09/all-crime/565049/" value="2018-09" selected="selected" data-original="true">reported in September 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-08/all-crime/565049/" value="2018-08">reported in August 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-07/all-crime/565049/" value="2018-07">reported in July 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-06/all-crime/565049/" value="2018-06">reported in June 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-05/all-crime/565049/" value="2018-05">reported in May 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-04/all-crime/565049/" value="2018-04">reported in April 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-03/all-crime/565049/" value="2018-03">reported in March 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-02/all-crime/565049/" value="2018-02">reported in February 2018</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2018-01/all-crime/565049/" value="2018-01">reported in January 2018</option>
+        
+            </optgroup><optgroup label="2017">
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-12/all-crime/565049/" value="2017-12">reported in December 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-11/all-crime/565049/" value="2017-11">reported in November 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-10/all-crime/565049/" value="2017-10">reported in October 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-09/all-crime/565049/" value="2017-09">reported in September 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-08/all-crime/565049/" value="2017-08">reported in August 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-07/all-crime/565049/" value="2017-07">reported in July 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-06/all-crime/565049/" value="2017-06">reported in June 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-05/all-crime/565049/" value="2017-05">reported in May 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-04/all-crime/565049/" value="2017-04">reported in April 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-03/all-crime/565049/" value="2017-03">reported in March 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-02/all-crime/565049/" value="2017-02">reported in February 2017</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2017-01/all-crime/565049/" value="2017-01">reported in January 2017</option>
+        
+            </optgroup><optgroup label="2016">
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-12/all-crime/565049/" value="2016-12">reported in December 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-11/all-crime/565049/" value="2016-11">reported in November 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-10/all-crime/565049/" value="2016-10">reported in October 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-09/all-crime/565049/" value="2016-09">reported in September 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-08/all-crime/565049/" value="2016-08">reported in August 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-07/all-crime/565049/" value="2016-07">reported in July 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-06/all-crime/565049/" value="2016-06">reported in June 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-05/all-crime/565049/" value="2016-05">reported in May 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-04/all-crime/565049/" value="2016-04">reported in April 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-03/all-crime/565049/" value="2016-03">reported in March 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-02/all-crime/565049/" value="2016-02">reported in February 2016</option>
+        
+            
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2016-01/all-crime/565049/" value="2016-01">reported in January 2016</option>
+        
+            </optgroup><optgroup label="2015">
+            <option data-url="/cambridgeshire/ECambs_Ely_City/crime/2015-12/all-crime/565049/" value="2015-12">reported in December 2015</option>
+        
+        </optgroup>
+    
+</select>
+
+
+        </div>
+    </div>
+
+    <button id="submit_filters" type="submit">Update</button>
+</form>
+
+
+            <div id="map-wrapper" aria-hidden="true" tabindex="-1">
+                <div class="controls">
+                    <div id="loading"></div>
+
+                    
+
+                    <ul class="mode">
+                        <li class="neighbourhood"><a href="#" data-mode="neighbourhood" title="Stevenage Central">Stevenage Central</a></li><li class="radius"><a href="#" data-mode="radius" title="1 mile radius">1 mile radius</a></li><li class="polygon"><a href="#" data-mode="polygon" title="Draw your own area">Draw your own area</a></li>
+                    </ul>
+
+                    <ul class="polygon">
+                        <li><a href="#" data-action="edit" class="edit" title="Edit">Edit</a></li>
+                        <li><a href="#" data-action="done" class="done" title="Done">Done</a></li>
+                        <li><a href="#" data-action="start-again" class="start-again" title="Start again">Start again</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p id="switch_view"><a href="/hertfordshire/E02/crime/2018-09/+okQo5G/locations/">View A-Z list of crime locations</a></p>
+
+        
+            <p><a href="/hertfordshire/E02/stop-and-search/map/2018-09/+okQo5G/">
+                View the stop and search map for Stevenage Central
+            </a></p>
+        
+
+        
+            
+            
+                
+                    <p id="no_location_crimes"><strong>44</strong> incidents of crime occurred in Hertfordshire Constabulary that could not be mapped to a specific location. <a href="/about-this-site/faqs/#why-are-some-crimes-not-displayed-on-the-map">Why?</a></p>
+                
+            
+        
+
+        
+
+<p>
+  Location anonymisation is accurate to 2012 population and housing developments.
+  <a href="/about-this-site/faqs/#what-have-you-done-to-ensure-that-my-privacy-is-protected-on-the-crime-map">Learn more</a>.
+</p>
+
+
+    </section>
+
+
+                    </div>
+
+                    <h2 class="visuallyhidden">Secondary navigation</h2><section id="related" class="anchor" aria-labelledby="related-label"><nav><h3 id="related-label">In this neighbourhood</h3><ul class="neighbourhood-nav"><li><a href="/hertfordshire/E02/">Overview</a></li><li><a href="/hertfordshire/E02/crime/2018-09/+okQo5G/" class="active" aria-current="page" aria-describedby="current_page">
+        Crime map</a></li><li><a href="/hertfordshire/E02/stop-and-search/">
+            Stop and search</a></li><li><a href="/hertfordshire/E02/team/">Policing team</a></li><li><a href="/hertfordshire/E02/news-and-events/">News and events</a></li><li class="priorities"><a href="/hertfordshire/E02/priorities/">Local policing priorities</a></li><li><a href="/hertfordshire/E02/performance/">Performance</a></li><li><a href="/hertfordshire/E02/community-payback/">Community Payback</a></li></ul><h3>Next steps</h3><ul class="next_steps"><li><a href="/hertfordshire/E02/crime/+okQo5G/stats/">View detailed statistics</a></li><li class="subscribe"><a href="/hertfordshire/E02/crime/2018-09/+okQo5G/subscribe/">Sign up for alerts</a></li><li class="share"><a href="#share">Share this page</a></li></ul><h3>Related pages</h3><ul><li class="relevant-advice"><a href="/crime-prevention-advice/">How to avoid being a victim of crime</a></li><li><a href="https://www.justiceinspectorates.gov.uk/hmicfrs/police-forces/hertfordshire/">Find out more about Hertfordshire Constabulary’s performance on HMIC’s website</a></li><li><a href="/about-this-site/faqs/#how-often-is-the-information-on-the-website-updated">How often is the information on the website updated?</a></li></ul></nav></section><div id="current_page">(current page)</div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <span id="totop"><a href="#top"><i class="fa fa-arrow-up" role="presentation" aria-hidden="true"></i>Back to top</a></span>
+
+        <footer role="contentinfo" id="footer">
+
+            <div class="inner">
+
+                <p id="footer_links">
+                    <span><a href="/about-this-site/cookies/">Cookies</a></span>
+                    <span>Powered by <a href="https://data.police.uk">data.police.uk</a></span>
+                </p>
+
+                <p id="ogl">
+                    <a id="ogl_logo" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" aria-hidden="true" class="rm-external">
+                        <img src="/static/img/open-government-licence.svg" data-svgswap="/static/img/open-government-licence.png" alt="" role="presentation" />
+                    </a><br />
+                    
+                    All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a> unless otherwise stated
+                </p>
+
+                <a id="home_office" href="https://www.gov.uk/government/organisations/home-office" class="rm-external">
+                    <img src="/static/img/home-office.svg" data-svgswap="/static/img/home-office.png" alt="Home Office"/>
+                </a>
+
+            </div>
+        </footer>
+
+        
+
+        <script type="text/javascript">
+            var by_location_url = '/search/reverse/';
+            var static_url = '/static/';
+        </script>
+
+        <script type="text/javascript" src="/static/js/base.min.2b68af2f65e1.js" charset="utf-8"></script>
+
+        
+    
+    <script type="text/javascript">
+        $('#data .controls').show().after('<div id="map" aria-hidden="true" tabindex="-1"></div>');
+    </script>
+    <script type="text/javascript" src="/static/js/crime/index.min.e727246d078d.js" charset="utf-8"></script>
+
+
+        
+            <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    var dimensions = {};
+
+    
+        dimensions['dimension1'] = 'hertfordshire';
+    
+
+    ga('create', 'UA-6558562-36', 'www.police.uk');
+    ga('send', 'pageview', dimensions);
+</script>
+
+        
+
+    </body>
+</html>

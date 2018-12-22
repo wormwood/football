@@ -49,7 +49,7 @@ fix_pred.filter_by_col('FixtureDateAsDate', predictday).filter_by_col('leagueid'
 X=fix_pred.X()
 
 c=FootballClf.FootballClf()
-clf=c.load_by_name('betting clf_1.1')
+clf=c.load_by_name('betting clf_2.2')
 pd.set_option('display.max_colwidth', 18)
 pd.set_option('colheader_justify', 'left')
 pd.set_option('display.expand_frame_repr', False)
